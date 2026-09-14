@@ -652,7 +652,7 @@
                 <h3>Connect With Us</h3>
                 <p>Stay updated with our latest vlogs, recipes, and special offers!</p>
                 <div class="social-links-grid">
-                    <a href="https://wa.me/923299713507" target="_blank" class="social-link-btn">
+                    <a href="whatsapp://send?phone=923299713507" class="social-link-btn">
                         💬 Official WhatsApp Channel
                     </a>
                     <a href="https://www.youtube.com" target="_blank" class="social-link-btn">
@@ -665,7 +665,7 @@
 
     <!-- Floating Buttons -->
     <div class="floating-btn-group">
-        <a href="https://wa.me/923299713507?text=Hi!%20I%20have%20a%20question%20about%20Nano%20Desi%20Foods" class="floating-wa-btn" title="Chat on WhatsApp" target="_blank">
+        <a href="whatsapp://send?phone=923299713507&text=Hi!%20I%20have%20a%20question%20about%20Nano%20Desi%20Foods" class="floating-wa-btn" title="Chat on WhatsApp">
             💬
         </a>
         <div class="floating-cart-btn" onclick="openCartModal()" title="View Shopping Cart">
@@ -676,7 +676,7 @@
 
     <!-- Mobile Action Bar -->
     <div class="mobile-action-bar">
-        <a href="https://wa.me/923299713507?text=Hi!%20I%20want%20to%20order%20from%20Nano%20Desi%20Foods" class="action-btn action-wa" target="_blank">
+        <a href="whatsapp://send?phone=923299713507&text=Hi!%20I%20want%20to%20order%20from%20Nano%20Desi%20Foods" class="action-btn action-wa">
             💬 WhatsApp Order
         </a>
         <button onclick="openMessageModal()" class="action-btn action-msg">
@@ -874,6 +874,21 @@
         let cart = [];
         let currentCustomItem = null;
         let selectedStarsCount = 5;
+
+        // TikTok Browser Direct WhatsApp Redirect Helper
+        function sendToWhatsApp(phone, text) {
+            const encodedText = encodeURIComponent(text);
+            const isAndroid = /Android/i.test(navigator.userAgent);
+            const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+            if (isAndroid) {
+                window.location.href = `intent://send?phone=${phone}&text=${encodedText}#Intent;scheme=whatsapp;package=com.whatsapp;end;`;
+            } else if (isIOS) {
+                window.location.href = `whatsapp://send?phone=${phone}&text=${encodedText}`;
+            } else {
+                window.location.href = `https://api.whatsapp.com/send?phone=${phone}&text=${encodedText}`;
+            }
+        }
 
         // Initialize App
         document.addEventListener("DOMContentLoaded", () => {
@@ -1203,8 +1218,8 @@
             }
 
             let msg = `*INQUIRY - NANO DESI FOODS*\n\n👤 *Name:* ${name}\n💬 *Message:* ${text}`;
-            const waUrl = `https://wa.me/923299713507?text=${encodeURIComponent(msg)}`;
-            window.open(waUrl, "_blank");
+            sendToWhatsApp("923299713507", msg);
+            closeMessageModal();
         }
 
         // WhatsApp Order Process
@@ -1254,8 +1269,8 @@
             waMessage += `💳 *Transaction ID (TID):* ${tid}\n\n`;
             waMessage += `Please confirm my order!`;
 
-            const waUrl = `https://wa.me/923299713507?text=${encodeURIComponent(waMessage)}`;
-            window.open(waUrl, "_blank");
+            sendToWhatsApp("923299713507", waMessage);
+            closeModal();
         }
 
         // Utility Functions
