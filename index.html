@@ -652,7 +652,7 @@
                 <h3>Connect With Us</h3>
                 <p>Stay updated with our latest vlogs, recipes, and special offers!</p>
                 <div class="social-links-grid">
-                    <a href="https://api.whatsapp.com/send?phone=923299713507" target="_blank" rel="noopener noreferrer" class="social-link-btn">
+                    <a href="https://wa.me/923299713507" target="_top" class="social-link-btn">
                         💬 Official WhatsApp Channel
                     </a>
                     <a href="https://www.youtube.com" target="_blank" class="social-link-btn">
@@ -665,7 +665,7 @@
 
     <!-- Floating Buttons -->
     <div class="floating-btn-group">
-        <a href="https://api.whatsapp.com/send?phone=923299713507&text=Hi!%20I%20have%20a%20question%20about%20Nano%20Desi%20Foods" class="floating-wa-btn" title="Chat on WhatsApp" target="_blank" rel="noopener noreferrer">
+        <a href="https://wa.me/923299713507?text=Hi!%20I%20have%20a%20question%20about%20Nano%20Desi%20Foods" class="floating-wa-btn" title="Chat on WhatsApp" target="_top">
             💬
         </a>
         <div class="floating-cart-btn" onclick="openCartModal()" title="View Shopping Cart">
@@ -676,7 +676,7 @@
 
     <!-- Mobile Action Bar -->
     <div class="mobile-action-bar">
-        <a href="https://api.whatsapp.com/send?phone=923299713507&text=Hi!%20I%20want%20to%20order%20from%20Nano%20Desi%20Foods" class="action-btn action-wa" target="_blank" rel="noopener noreferrer">
+        <a href="https://wa.me/923299713507?text=Hi!%20I%20want%20to%20order%20from%20Nano%20Desi%20Foods" class="action-btn action-wa" target="_top">
             💬 WhatsApp Order
         </a>
         <button onclick="openMessageModal()" class="action-btn action-msg">
@@ -874,6 +874,13 @@
         let cart = [];
         let currentCustomItem = null;
         let selectedStarsCount = 5;
+
+        // Helper to trigger direct WhatsApp / wa.me
+        function triggerWhatsAppLink(phone, text) {
+            const encodedText = encodeURIComponent(text);
+            const waUrl = `https://wa.me/${phone}?text=${encodedText}`;
+            window.location.href = waUrl;
+        }
 
         // Initialize App
         document.addEventListener("DOMContentLoaded", () => {
@@ -1203,35 +1210,13 @@
             }
 
             let msg = `*INQUIRY - NANO DESI FOODS*\n\n👤 *Name:* ${name}\n💬 *Message:* ${text}`;
-            navigator.clipboard.writeText(msg).catch(() => {});
             
-            const encodedText = encodeURIComponent(msg);
-            const whatsappUrl = `https://api.whatsapp.com/send?phone=923299713507&text=${encodedText}`;
+            // Copy to clipboard
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(msg).catch(() => {});
+            }
 
-            const msgContent = document.querySelector("#messageModal .modal-content");
-            msgContent.innerHTML = `
-                <button class="close-btn" onclick="closeMessageModal(); location.reload();">×</button>
-                <div style="text-align:center; padding: 10px 5px;">
-                    <div style="font-size: 2.5rem; margin-bottom: 8px;">📋</div>
-                    <h2 style="font-size: 1.3rem; color: var(--dark); margin-bottom: 6px;">Inquiry Copied!</h2>
-                    <p style="font-size: 0.85rem; color: #25D366; font-weight:800; margin-bottom: 15px;">Message clipboard par copy ho chuka hai.</p>
-                    
-                    <div style="background:#fff3cd; border:1.5px solid #ffe8a1; padding:12px; border-radius:10px; text-align:left; font-size:0.83rem; color:#856404; margin-bottom:15px; line-height:1.5;">
-                        <strong>⚠️ TikTok Browser Restriction Notice:</strong><br>
-                        TikTok external apps ko direct open nahi hone deta.<br><br>
-                        <strong>WhatsApp Par Bhejney Ke Tarikey:</strong>
-                        <ol style="margin-left:18px; margin-top:5px;">
-                            <li>Upar Daain konay mein <strong>3 Dots (⋮)</strong> click karke <strong>"Open in Browser" (Chrome)</strong> choose karein.</li>
-                            <li>Ya Direct WhatsApp open karke Number <strong>0329-9713507</strong> par Paste kar dein.</li>
-                        </ol>
-                    </div>
-
-                    <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="submit-btn" style="display:block; text-decoration:none; text-align:center; padding: 14px; font-size: 1rem; background: var(--whatsapp); color: white; border-radius: 10px; font-weight:800; margin-bottom:10px;">
-                        💬 Open WhatsApp Direct
-                    </a>
-                    <button onclick="copyNumber('03299713507')" class="copy-btn" style="width:100%; padding:10px; font-size:0.85rem;">📋 Copy WhatsApp Number</button>
-                </div>
-            `;
+            triggerWhatsAppLink("923299713507", msg);
         }
 
         // WhatsApp Order Process (TikTok In-App Browser Safe)
@@ -1282,10 +1267,12 @@
             waMessage += `Please confirm my order!`;
 
             // Auto copy order text to clipboard
-            navigator.clipboard.writeText(waMessage).catch(() => {});
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(waMessage).catch(() => {});
+            }
 
             const encodedText = encodeURIComponent(waMessage);
-            const whatsappUrl = `https://api.whatsapp.com/send?phone=923299713507&text=${encodedText}`;
+            const waUrl = `https://wa.me/923299713507?text=${encodedText}`;
 
             // Replace modal view with TikTok-safe instructions
             const checkoutContent = document.querySelector("#checkoutModal .modal-content");
@@ -1297,16 +1284,11 @@
                     <p style="font-size: 0.85rem; color: #25D366; font-weight:800; margin-bottom: 15px;">Aapka order text clipboard par copy ho chuka hai.</p>
                     
                     <div style="background:#fff3cd; border:1.5px solid #ffe8a1; padding:12px; border-radius:10px; text-align:left; font-size:0.83rem; color:#856404; margin-bottom:15px; line-height:1.5;">
-                        <strong>⚠️ TikTok Browser Restriction Notice:</strong><br>
-                        TikTok application external apps ko direct open nahi hone deta.<br><br>
-                        <strong>Order bhejney ke 2 Aasan Tarikey:</strong>
-                        <ol style="margin-left:18px; margin-top:5px;">
-                            <li>Upar Daain konay mein <strong>3 Dots (⋮)</strong> click karke <strong>"Open in Browser" (Chrome)</strong> choose karein.</li>
-                            <li>Ya Direct WhatsApp open karke Number <strong>0329-9713507</strong> par Order Paste kar dein.</li>
-                        </ol>
+                        <strong>⚠️ TikTok Browser Instruction:</strong><br>
+                        Agar WhatsApp automatic na khule, toh upar Daain konay (top right) mein <strong>3 Dots (⋮)</strong> click karke <strong>"Open in Browser" (Chrome)</strong> select karein.
                     </div>
 
-                    <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="submit-btn" style="display:block; text-decoration:none; text-align:center; padding: 14px; font-size: 1rem; background: var(--whatsapp); color: white; border-radius: 10px; font-weight:800; margin-bottom:10px;">
+                    <a href="${waUrl}" target="_top" class="submit-btn" style="display:block; text-decoration:none; text-align:center; padding: 14px; font-size: 1rem; background: var(--whatsapp); color: white; border-radius: 10px; font-weight:800; margin-bottom:10px;">
                         💬 Open WhatsApp Direct
                     </a>
 
@@ -1315,6 +1297,9 @@
                     </button>
                 </div>
             `;
+
+            // Redirect
+            window.location.href = waUrl;
         }
 
         // Utility Functions
