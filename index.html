@@ -242,7 +242,7 @@
         .footer-col a:hover { color: var(--white); text-decoration: underline; }
         
         .social-links-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
-        .social-link-btn { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.06); border: 1px solid var(--border-color); color: var(--white) !important; padding: 10px 14px; border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 700; text-decoration: none !important; transition: var(--transition); }
+        .social-link-btn { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.06); border: 1px solid var(--border-color); color: var(--white) !important; padding: 10px 14px; border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 700; text-decoration: none !important; transition: var(--transition); cursor: pointer; }
         .social-link-btn:hover { background: var(--gold); color: var(--dark) !important; transform: translateX(4px); }
 
         /* Floating Action Buttons */
@@ -652,9 +652,9 @@
                 <h3>Connect With Us</h3>
                 <p>Stay updated with our latest vlogs, recipes, and special offers!</p>
                 <div class="social-links-grid">
-                    <a href="https://wa.me/923299713507" target="_top" class="social-link-btn">
+                    <button onclick="openWhatsAppDirect('923299713507', 'Hi! I want to contact Nano Desi Foods')" class="social-link-btn">
                         💬 Official WhatsApp Channel
-                    </a>
+                    </button>
                     <a href="https://www.youtube.com" target="_blank" class="social-link-btn">
                         ▶️ Hero Vlogging YouTube
                     </a>
@@ -665,9 +665,9 @@
 
     <!-- Floating Buttons -->
     <div class="floating-btn-group">
-        <a href="https://wa.me/923299713507?text=Hi!%20I%20have%20a%20question%20about%20Nano%20Desi%20Foods" class="floating-wa-btn" title="Chat on WhatsApp" target="_top">
+        <div class="floating-wa-btn" title="Chat on WhatsApp" onclick="openWhatsAppDirect('923299713507', 'Hi! I have a question about Nano Desi Foods')">
             💬
-        </a>
+        </div>
         <div class="floating-cart-btn" onclick="openCartModal()" title="View Shopping Cart">
             🛒
             <div class="cart-badge" id="cartCount">0</div>
@@ -676,9 +676,9 @@
 
     <!-- Mobile Action Bar -->
     <div class="mobile-action-bar">
-        <a href="https://wa.me/923299713507?text=Hi!%20I%20want%20to%20order%20from%20Nano%20Desi%20Foods" class="action-btn action-wa" target="_top">
+        <button onclick="openWhatsAppDirect('923299713507', 'Hi! I want to order from Nano Desi Foods')" class="action-btn action-wa">
             💬 WhatsApp Order
-        </a>
+        </button>
         <button onclick="openMessageModal()" class="action-btn action-msg">
             📩 Direct Inquiry
         </button>
@@ -875,11 +875,17 @@
         let currentCustomItem = null;
         let selectedStarsCount = 5;
 
-        // Helper to trigger direct WhatsApp / wa.me
-        function triggerWhatsAppLink(phone, text) {
+        // Direct WhatsApp redirection
+        function openWhatsAppDirect(phone, text) {
             const encodedText = encodeURIComponent(text);
             const waUrl = `https://wa.me/${phone}?text=${encodedText}`;
-            window.location.href = waUrl;
+            
+            const link = document.createElement('a');
+            link.href = waUrl;
+            link.target = '_top';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         // Initialize App
@@ -1210,16 +1216,11 @@
             }
 
             let msg = `*INQUIRY - NANO DESI FOODS*\n\n👤 *Name:* ${name}\n💬 *Message:* ${text}`;
-            
-            // Copy to clipboard
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(msg).catch(() => {});
-            }
-
-            triggerWhatsAppLink("923299713507", msg);
+            closeMessageModal();
+            openWhatsAppDirect("923299713507", msg);
         }
 
-        // WhatsApp Order Process (TikTok In-App Browser Safe)
+        // Process Order Function
         function processOrder() {
             if (cart.length === 0) {
                 showToast("Aap ka cart khali hai!", "⚠️");
@@ -1266,40 +1267,8 @@
             waMessage += `💳 *Transaction ID (TID):* ${tid}\n\n`;
             waMessage += `Please confirm my order!`;
 
-            // Auto copy order text to clipboard
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(waMessage).catch(() => {});
-            }
-
-            const encodedText = encodeURIComponent(waMessage);
-            const waUrl = `https://wa.me/923299713507?text=${encodedText}`;
-
-            // Replace modal view with TikTok-safe instructions
-            const checkoutContent = document.querySelector("#checkoutModal .modal-content");
-            checkoutContent.innerHTML = `
-                <button class="close-btn" onclick="closeModal(); location.reload();">×</button>
-                <div style="text-align:center; padding: 10px 5px;">
-                    <div style="font-size: 2.5rem; margin-bottom: 8px;">📋</div>
-                    <h2 style="font-size: 1.3rem; color: var(--dark); margin-bottom: 6px;">Order Details Copied!</h2>
-                    <p style="font-size: 0.85rem; color: #25D366; font-weight:800; margin-bottom: 15px;">Aapka order text clipboard par copy ho chuka hai.</p>
-                    
-                    <div style="background:#fff3cd; border:1.5px solid #ffe8a1; padding:12px; border-radius:10px; text-align:left; font-size:0.83rem; color:#856404; margin-bottom:15px; line-height:1.5;">
-                        <strong>⚠️ TikTok Browser Instruction:</strong><br>
-                        Agar WhatsApp automatic na khule, toh upar Daain konay (top right) mein <strong>3 Dots (⋮)</strong> click karke <strong>"Open in Browser" (Chrome)</strong> select karein.
-                    </div>
-
-                    <a href="${waUrl}" target="_top" class="submit-btn" style="display:block; text-decoration:none; text-align:center; padding: 14px; font-size: 1rem; background: var(--whatsapp); color: white; border-radius: 10px; font-weight:800; margin-bottom:10px;">
-                        💬 Open WhatsApp Direct
-                    </a>
-
-                    <button onclick="copyNumber('03299713507')" class="copy-btn" style="width:100%; padding:10px; font-size:0.85rem;">
-                        📋 Copy WhatsApp Number (03299713507)
-                    </button>
-                </div>
-            `;
-
-            // Redirect
-            window.location.href = waUrl;
+            closeModal();
+            openWhatsAppDirect("923299713507", waMessage);
         }
 
         // Utility Functions
